@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{diplomwork}[2018/09/03]
+\ProvidesClass{diplomwork}[2020/01/28]
 \DeclareOption{14pt}{\PassOptionsToClass{\CurrentOption}{extreport}}
 \DeclareOption{12pt}{\PassOptionsToClass{\CurrentOption}{extreport}}
 
@@ -24,13 +24,9 @@
 \DeclareOption{Otchet}{
 \Practikatrue
 }
-\DeclareOption{OtchetII}{
-	\Practikatrue
+\DeclareOption{Report}{
+\Practikatrue
 }
-\DeclareOption{OtchetIII}{
-	\Practikatrue
-}
-
 \ProcessOptions
 \relax
 
@@ -41,9 +37,10 @@
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[russian]{babel}
 \RequirePackage{amssymb, amsmath, amsthm}
+\RequirePackage{array}
 \RequirePackage{setspace} 
 
-\usepackage[margin=20mm, left=30mm, right=10mm, % поля по 20\, мм
+\usepackage[margin=20mm, left=30mm, right=10mm, 
             nohead,  % без верхнего колонтитула
              foot=22pt % место под номер страницы
             ]{geometry} 
@@ -62,6 +59,8 @@
 \setlist[enumerate]{label*=\arabic*.} % нумированный список с точкой
 \newlist{alphlist}{enumerate}{1}
 \setlist[alphlist,1]{label=\asbuk*), ref=\asbuk*)} %списки со скобками
+\newlist{properties}{enumerate}{1}
+\setlist[properties]{label=\arabic*$^\circ$, ref=\arabic*$^\circ$} %списки со скобками
 
 \RequirePackage[unicode=true]{hyperref} 
 \hypersetup{
@@ -74,16 +73,31 @@
 
 \RequirePackage{float}
 \RequirePackage{caption}
-\DeclareCaptionLabelSeparator{dot}{.~}
-\captionsetup[table]{labelfont={it}, justification=centering,labelsep=dot}
-\captionsetup[figure]{labelfont={it},justification=centering,labelsep=dot}
+\DeclareCaptionLabelSeparator{dot}{~--~}
+\captionsetup[table]{
+	labelfont={up}, 
+	format=plain,
+	justification=centering,
+	singlelinecheck=false,
+	margin= 1.5cm,
+	labelsep=dot,
+	position=above,
+	name=Таблица}
+\captionsetup[figure]{
+	labelfont={up},
+	justification=centering,
+	labelsep=endash,
+	position=below,
+	name=Рисунок}
 
 % Название кафедры и зав каф
 \newcommand{\thekafedra}{}
+\newcommand{\theshortkafedra}{}
 \newcommand{\thezavkaf}{}
-\newcommand{\kafedra}[2]%
-  {\renewcommand{\thekafedra}{#1}
-   \renewcommand{\thezavkaf}{#2}}
+\newcommand{\kafedra}[3][]%
+  {\renewcommand{\theshortkafedra}{#1}
+  \renewcommand{\thekafedra}{#2}
+   \renewcommand{\thezavkaf}{#3}}
 % руководитель магистерской программы
 \newcommand{\themagistradvisor}{}
 \newcommand{\theMa}{}
@@ -94,11 +108,18 @@
 % Направление подготовки
 \newcommand{\theNapravIndex}{}
 \newcommand{\theNaprav}{}
-\newcommand{\napravlenie}[2]{\renewcommand{\theNapravIndex}{#1}
-\renewcommand{\theNaprav}{#2}}
+\newcommand{\theProfile}{}
+\newcommand{\napravlenie}[2]{%
+	\renewcommand{\theNapravIndex}{#1}
+	\renewcommand{\theNaprav}{#2}}
+
+\newcommand{\profile}[1]{
+	\renewcommand{\theProfile}{Профиль: <<#1>>}
+	}
 
 
 % Факультет
+\newcommand{\NIL}{}
 \newcommand{\thedepartment}{}
 \newcommand{\theinstitute}{}
 \newcommand{\thedekan}{}
@@ -107,18 +128,30 @@
 \newcommand{\department}[2]% 
   {\renewcommand{\thedepartment}{#1}
    \renewcommand{\thedekan}{#2}}
+
 % Автор работы
 \newcommand{\theauthor}{}
 \newcommand{\theAuthor}{}
-\renewcommand{\author}[2]%
-  {\renewcommand{\theAuthor}{#1}
-   \renewcommand{\theauthor}{#2}} 
+\newcommand{\theauthorIO}{}
+
+%\newcommand{\author}[2]{\def\aut@r{#1}{#2}\author@io}
+%\newcommand{\autor@io}[1][]{\aut@r; optional: #1}
+
+\renewcommand{\author}[3][]%
+  {\renewcommand{\theauthorIO}{#1}
+	\renewcommand{\theAuthor}{#2}
+	\renewcommand{\theauthor}{#3}} 
+
 % Руководитель
+
 \newcommand{\theadvisor}{}
+\newcommand{\theadvisorIO}{}
 \newcommand{\theAdvisor}{}
-\newcommand{\advisor}[2]%
-  {\renewcommand{\theAdvisor}{#1}
-   \renewcommand{\theadvisor}{#2}}
+\newcommand{\advisor}[3][]%
+  {\renewcommand{\theadvisorIO}{#1}
+   \renewcommand{\theAdvisor}{#2}
+   \renewcommand{\theadvisor}{#3}}
+
 \newcommand{\therecenzent}{}
 \newcommand{\theRecenzent}{}
 \newcommand{\recenz}[2]%
@@ -126,10 +159,16 @@
    \renewcommand{\therecenzent}{#2}}
 
 
+\newcommand{\thekeywords}{}
+\newcommand{\keywords}[1]{\renewcommand{\thekeywords}{#1}}
+
 % название работы
 \newcommand{\thework}{}
 \newcommand{\work}[1]{\renewcommand{\thework}{#1}}
 
+% Тип отчета
+\newcommand{\theReportType}{}
+\newcommand{\reporttype}[1]{\renewcommand{\theReportType}{#1}}
 
 %\newcommand{\theTheme}{на тему:~}
 %\newcommand{\thebeforeTitle}{<<}
@@ -160,7 +199,8 @@
   \renewcommand{\thebeforeTitle}{}
   \renewcommand{\theafterTitle}{}
   \ifPractika
-    \work{Отчёт по производственной практике}
+    \work{Отчёт}
+	\renewcommand{\show@title}{\thework{} \theReportType}    
   \else 
     \work{}
 %    \work{Курсовая работа}
@@ -175,7 +215,7 @@
 \centering 
 {
 	\small
-	Министерство науки и высшего образования РФ\par
+	Министерство образования и науки Российской Федерации\par
 	\smallskip
 	ФГБОУ ВО <<ВЯТСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ>>\par
 	\bigskip
@@ -194,13 +234,16 @@
  \ifItog %Дипломная
 	{\Large \thework
 	\par}
+	\smallskip
 	по направлению подготовки\\
-	\theNapravIndex~--- {\theNaprav}\par 
-	\bigskip
-	На тему <<\show@title>> 
+	\theNapravIndex\enspace{\theNaprav}\par 
+	\theProfile
+	\par
+	\vspace{1cm}
+	{\large на тему <<\show@title>> \par}
   \else
 	\ifPractika 
-		{\Large \scshape \bfseries \thework\par} % Печатаем называние работы
+		{\Large \scshape \bfseries  \show@title\par} % Печатаем называние работы
 		\bigskip
 	\else 
 	{
@@ -212,7 +255,8 @@
 	}
 	\fi
 	\bigskip
-	Направление подготовки: \theNapravIndex~--- {\theNaprav}\par 
+	Направление подготовки: \theNapravIndex\enspace{\theNaprav}\par
+	\theProfile \par
   \fi
 
 \vfill
@@ -295,18 +339,68 @@
   \rightskip\@flushglue\leftskip\@flushglue
   \parindent\z@\parfillskip\z@skip}
   
-\RequirePackage{titlesec}
+\RequirePackage{titlesec,titletoc}
+
+% Оформление глав
+	\titleformat{name=\chapter,numberless}
+		{\filcenter}
+		{}
+		{8pt}
+		{\large\bfseries}{\MTKPsectAlignCenter}
+
+	\titlespacing*{\chapter}{0pt}{-30pt}{8pt}
+
+\newcommand{\@SETCHAPTER}{
+	\titleformat{\chapter}[display]
+		{\filcenter}
+		{\large \chaptertitlename~\thechapter}
+		{8pt}
+		{\large\bfseries}{\MTKPsectAlignCenter}
+	\titlecontents{chapter}
+		[0em] % ie, 1.5em (chapter) + 2.3em
+		{\medskip \hyphenpenalty=10000 \hbadness=10000}
+		{\@chapapp~\thecontentslabel.\enspace}
+		{}
+		{\enspace\titlerule*[1pc]{.}\contentspage}
+		[\addvspace{0pt}]% 
+}
+\@SETCHAPTER
+
+	\newcommand{\Chapter}[1]%			% Глава без номера
+		{\chapter*{#1}\addcontentsline{toc}{chapter}{#1}}	
+		
+
+	\newcommand{\NOCHAPTER}{
+		\titleformat{\chapter}
+			{\filcenter}
+			{\large \bfseries\thechapter.}
+			{8pt}
+			{\large\bfseries}{\MTKPsectAlignCenter}
+		\titlecontents{chapter}
+			[0em]
+			{\medskip \hyphenpenalty=10000 \hbadness=10000}
+			{\thecontentslabel.\enspace}
+			{}
+			{\enspace\titlerule*[1pc]{.}\contentspage}
+			[\addvspace{0pt}]% 
+	}	
+	\setcounter{tocdepth}{2}   
      
-    \titleformat{\chapter}[display]
-        {\filcenter}
-        {\large \chaptertitlename~\thechapter}
-        {8pt}
-        {\large\bfseries}{\MTKPsectAlignCenter}
-     
-    \titleformat{\section}
-        {\normalsize\bfseries}
-        {\thesection}
-        {1em}{\MTKPsectAlignLeft}
+% Оформление параграфов
+	\titleformat{\section}
+		{\normalsize\bfseries}
+		{\thesection}
+		{1em}
+		{\MTKPsectAlignLeft}
+
+	\titlespacing*{\section}{\parindent}{*4}{*4}
+
+	\titlecontents{section}
+		[2em] % ie, 1.5em (chapter) + 2.3em
+		{\smallskip \hyphenpenalty=10000 \hbadness=10000}
+		{\thecontentslabel.\enspace}
+		{}
+		{\enspace\titlerule*[1pc]{.}\contentspage}
 
      
     \titleformat{\subsection}
@@ -315,14 +409,16 @@
         {1em}{\MTKPsectAlignLeft}
      
 % Настройка вертикальных и горизонтальных отступов
-    \titlespacing*{\chapter}{0pt}{-30pt}{8pt}
-    \titlespacing*{\section}{\parindent}{*4}{*4}
     \titlespacing*{\subsection}{\parindent}{*4}{*4}
-    
-% Глава без номера    
-   \newcommand{\l@unchapter}[2]{{\@dottedtocline{0}{0pt}{0pt}{#1}{#2}}}    
-   \newcommand{\Chapter}[1]%
-   {\chapter*{#1}\addcontentsline{toc}{unchapter}{#1}}
+	\titlespacing{\paragraph}{\parindent}{0pt}{.5em}[]    
+	
+	
+
+
+
+
+
+%   \newcommand{\l@unchapter}[2]{{\@dottedtocline{0}{0pt}{0pt}{#1}{#2}}}    
    
    
 % настройка библиографического списка перенесено из article.cls
@@ -362,6 +458,8 @@
 \renewcommand{\appendixname}{ПРИЛОЖЕНИЕ}
 \renewcommand{\chaptername}{ГЛАВА}
 \renewcommand{\bibname}{Библиографический список} 
+\addtocontents{toc}{\protect\renewcommand{\protect\@chapapp}{\chaptername}}%
+
 \ifPractika 
 	\renewcommand{\contentsname}{Содержание}
 \fi
@@ -370,50 +468,27 @@
    
 % Настройка Оглавления    
 
-\def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
-                         \refstepcounter{chapter}%
-                         \typeout{\@chapapp\space\thechapter.}%
-                         \addcontentsline{toc}{chapter}%
-                                   {\@chapapp~\protect\numberline{\thechapter}#1}%
-                    \else
-                      \addcontentsline{toc}{chapter}{#1}%
-                    \fi
-                    \chaptermark{#1}%
-                    \addtocontents{lof}{\protect\addvspace{10\p@}}%
-                    \addtocontents{lot}{\protect\addvspace{10\p@}}%
-%                    \if@twocolumn
-%                      \@topnewpage[\@makechapterhead{#2}]%
-%                    \else
-			
-                      \@makechapterhead{#2}%
-                      \@afterheading
-%                    \fi
-                    }
 
-
-\RequirePackage{tocloft}
-\renewcommand{\@tocrmarg}{1em plus1fil} %Запрещаем переносы в словах содержания
-    \renewcommand{\cfttoctitlefont}{\hspace{0.38\textwidth} \bfseries\large}
-    \renewcommand{\cftbeforetoctitleskip}{-1em}
-%%%    \renewcommand{\cftaftertoctitle}{\mbox{}\hfill \\ \mbox{}\hfill{\footnotesize Стр.}\vspace{-2.5em}}
-    \renewcommand{\cftchapfont}{\normalsize}
-    \renewcommand{\cftchappagefont}{\normalsize}
-    \renewcommand{\cftsecfont}{\hspace{31pt}}
-    \renewcommand{\cftsubsecfont}{\hspace{11pt}}
-    \renewcommand{\cftbeforechapskip}{1ex}
-    \renewcommand{\cftparskip}{-1mm}
-    \renewcommand{\cftdotsep}{5.5}
-    \setcounter{tocdepth}{2}   
 
 
 % теоремы
   \newtheorem{theorem}{\hspace{\parindent}Теорема}
+  \newtheorem*{theorem*}{\hspace{\parindent}Теорема}
   \newtheorem{prop}{\hspace{\parindent}Предложение}
+  \newtheorem{proposition}{\hspace{\parindent}Предложение}
+  \newtheorem*{proposition*}{\hspace{\parindent}Предложение}
   \newtheorem{seq}{\hspace{\parindent}Следствие}
+  \newtheorem{corollary}{\hspace{\parindent}Следствие}
+  \newtheorem*{corollary*}{\hspace{\parindent}Следствие}
   \newtheorem{lemma}{\hspace{\parindent}Лемма}
+  \newtheorem*{lemma*}{\hspace{\parindent}Лемма}
 \theoremstyle{definition} 
   \newtheorem{example}{\hspace{\parindent}Пример}
+  \newtheorem*{example*}{\hspace{\parindent}Пример}
   \newtheorem{definition}{\hspace{\parindent}Определение}
+  \newtheorem*{definition*}{\hspace{\parindent}Определение}
+  
+\newcommand*{\hm}[1]{#1\nobreak\discretionary{}{\hbox{$\mathsurround=0pt #1$}}{}}  % Повторение знака в формулах
 \sloppy
 \linespread{1.3}
 
@@ -426,17 +501,167 @@
 \newcommand{\APPENDIX}{
   \newpage
   \appendix
-  \gdef\@chapapp{\appendixname}%
-  \gdef\thechapter{\Asbuk{chapter}}  
-%  \setcounter{chapter}{0}%
-%  \setcounter{section}{0}%
-%  \gdef\thechapter{\@Alph\c@chapter}}
-%  \setcounter{section}{0} % нумерация глав сначала
-%  \renewcommand{\thesection}{\Asbuk{section}} % Разделы нумеруем русскими буквами
-%  \renewcommand{\sectionname}{Приложение} % перед разделом пишем Приложение
-  \setcounter{page}{1} % нумерацию страниц начинаем с 2
-  \renewcommand{\thepage}{\roman{page}} % страницы нумеруем римскими числами, так как приложения не являются частью работы
-  
+	\@SETCHAPTER
+	\gdef\@chapapp{\appendixname}%
+	\addtocontents{toc}{\protect\renewcommand{\protect\@chapapp}{\appendixname}}%
+	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}%
+	\gdef\thechapter{\Asbuk{chapter}}  
+%	\setcounter{page}{1} % нумерацию страниц начинаем с 2
+%	\renewcommand{\thepage}{\roman{page}} % страницы нумеруем римскими числами, так как приложения не являются частью работы
 }
 
+
+\newcommand{\LISTINGS}{
+%========================================================
+% Описание алгоритмов (если не нужно, то можете удалить)
+%========================================================
+\usepackage{listings}
+% подгружаемые языки — подробнее в документации listings
+\lstset{
+  inputencoding=utf8,
+  extendedchars=true,
+  columns=fullflexible,
+  keepspaces = true,
+  basicstyle=\sffamily\small,
+  keywordstyle=\bfseries,
+  emphstyle={\itshape}
+  numbers=left,        % где поставить нумерацию строк (слева\справа)
+  numberstyle=\scriptsize,   % размер шрифта для номеров строк
+  numberfirstline=false,
+  numberblanklines=false,
+  stepnumber=1,        % размер шага между двумя номерами строк
+  numbersep=5pt,       % как далеко отстоят номера строк от подсвечиваемого кода
+  showspaces=false,         % не показывать пробелы специальными отступами
+  showstringspaces=false,   % не показывать пробелы в строках
+  showtabs=false,           % не показывать табуляцию в строках
+  tabsize=2,                % размер табуляции по умолчанию равен 2 пробелам
+  captionpos=t,             % позиция заголовка вверху [t] или внизу [b] 
+  breaklines= true,          % автоматически переносить строки 
+  breakatwhitespace=true,   % переносить строки только если есть пробел
+  escapeinside={\%*}{*)},   % комментарии в коде
+%   дополнителньые команды
+  %бубен для listings см.
+%http://roman.khimov.ru/2011/05/19/latex-listings-cyrillic/
+  literate={а}{{\selectfont\char224}}1
+    {б}{{\selectfont\char225}}1
+    {в}{{\selectfont\char226}}1
+    {г}{{\selectfont\char227}}1
+    {д}{{\selectfont\char228}}1
+    {е}{{\selectfont\char229}}1
+    {ё}{{\"e}}1
+    {ж}{{\selectfont\char230}}1
+    {з}{{\selectfont\char231}}1
+    {и}{{\selectfont\char232}}1
+    {й}{{\selectfont\char233}}1
+    {к}{{\selectfont\char234}}1
+    {л}{{\selectfont\char235}}1
+    {м}{{\selectfont\char236}}1
+    {н}{{\selectfont\char237}}1
+    {о}{{\selectfont\char238}}1
+    {п}{{\selectfont\char239}}1
+    {р}{{\selectfont\char240}}1
+    {с}{{\selectfont\char241}}1
+    {т}{{\selectfont\char242}}1
+    {у}{{\selectfont\char243}}1
+    {ф}{{\selectfont\char244}}1
+    {х}{{\selectfont\char245}}1
+    {ц}{{\selectfont\char246}}1
+    {ч}{{\selectfont\char247}}1
+    {ш}{{\selectfont\char248}}1
+    {щ}{{\selectfont\char249}}1
+    {ъ}{{\selectfont\char250}}1
+    {ы}{{\selectfont\char251}}1
+    {ь}{{\selectfont\char252}}1
+    {э}{{\selectfont\char253}}1
+    {ю}{{\selectfont\char254}}1
+    {я}{{\selectfont\char255}}1
+    {А}{{\selectfont\char192}}1
+    {Б}{{\selectfont\char193}}1
+    {В}{{\selectfont\char194}}1
+    {Г}{{\selectfont\char195}}1
+    {Д}{{\selectfont\char196}}1
+    {Е}{{\selectfont\char197}}1
+    {Ё}{{\"E}}1
+    {Ж}{{\selectfont\char198}}1
+    {З}{{\selectfont\char199}}1
+    {И}{{\selectfont\char200}}1
+    {Й}{{\selectfont\char201}}1
+    {К}{{\selectfont\char202}}1
+    {Л}{{\selectfont\char203}}1
+    {М}{{\selectfont\char204}}1
+    {Н}{{\selectfont\char205}}1
+    {О}{{\selectfont\char206}}1
+    {П}{{\selectfont\char207}}1
+    {Р}{{\selectfont\char208}}1
+    {С}{{\selectfont\char209}}1
+    {Т}{{\selectfont\char210}}1
+    {У}{{\selectfont\char211}}1
+    {Ф}{{\selectfont\char212}}1
+    {Х}{{\selectfont\char213}}1
+    {Ц}{{\selectfont\char214}}1
+    {Ч}{{\selectfont\char215}}1
+    {Ш}{{\selectfont\char216}}1
+    {Щ}{{\selectfont\char217}}1
+    {Ъ}{{\selectfont\char218}}1
+    {Ы}{{\selectfont\char219}}1
+    {Ь}{{\selectfont\char220}}1
+    {Э}{{\selectfont\char221}}1
+    {Ю}{{\selectfont\char222}}1
+    {Я}{{\selectfont\char223}}1
+}
+\lst@AddToHook{TextStyle}{\let\lst@basicstyle\sffamily\normalsize}
+
+\captionsetup[lstlisting]{labelfont={},justification=centering,labelsep=dot}
+%===============================================================================
+}
+
+\AtEndDocument{~\label{LastPage}}
+
+
+\newcommand{\makereferat}{
+	\newcounter{tmppage}
+	\setcounter{tmppage}{\value{page}}
+	\newpage
+	\chapter*{Реферат}
+	\thispagestyle{empty}
+	\ifx \theauthorIO \NIL
+		\theauthor
+	\else
+		\theauthorIO
+	\fi
+	\enspace {\show@title}~: \thework~/ ВятГУ, 
+	каф. 
+	\ifx \theshortkafedra \NIL
+		\thekafedra
+	\else
+		\theshortkafedra
+	\fi;
+	рук. 
+	\ifx  \theadvisorIO \NIL
+			 \theadvisor
+		\else
+			\theadvisorIO
+		\fi;~---
+	Киров, \thedate.~--- 
+	\pageref{LastPage}~c.\par
+	\bigskip
+	{\scshape \thekeywords}\par
+	\bigskip
+	\theannotation
+	\newpage
+	\setcounter{page}{\value{tmppage}}
+	}
+	\newcommand{\theannotation}{}
+	\newcommand{\annotation}[1]{\renewcommand{\theannotation}{#1}}
+	
+
+
+\RequirePackage{longtable}
+
+\def\continetbl{% 
+	\LT@mcol\LT@cols l{\hbox to\z@{\parbox[t]\LTcapwidth{%
+	\sbox\@tempboxa{{}Продолжение таблицы\enspace\thetable}% 
+	{\box\@tempboxa\hfil}%
+	\endgraf}% 
+	\hss}}} 
 \endinput
