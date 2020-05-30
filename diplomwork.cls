@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{diplomwork}[2020/01/28]
+\ProvidesClass{diplomwork}[2020/05/30]
 \DeclareOption{14pt}{\PassOptionsToClass{\CurrentOption}{extreport}}
 \DeclareOption{12pt}{\PassOptionsToClass{\CurrentOption}{extreport}}
 
