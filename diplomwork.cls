@@ -4,29 +4,56 @@
 \DeclareOption{12pt}{\PassOptionsToClass{\CurrentOption}{extreport}}
 
 
-\newif\ifMagister
-\newif\ifItog
-\newif\ifPractika
-\newif\ifBiblatex
+\newif\ifProject	% флаг Проект
 
-\DeclareOption{Kurs}{}
+\newif\ifCoursework	% флаг Курсовая работа
+\newif\ifMagister	% флаг Магистерская диссертация
+\newif\ifItog		% флаг Выпускная квалификационная работа
+\newif\ifPractika	% флаг Отчет по практике
+
+\newif\ifBiblatex	% флаг Использовать Biblatex
+
+\newif\ifConsult	% флаг Есть консультант
+
+\DeclareOption{Coursework}{
+	\Courseworktrue
+	\Magisterfalse  
+	\Practikafalse
+	\Itogfalse
+}
 \DeclareOption{Diplom}{
-  \Itogtrue
+	\Itogtrue
+	%  
+	\Magisterfalse
+	\Courseworkfalse
+	\Practikafalse
 }
 \DeclareOption{biblatex}{
-	
-	
 }
 \DeclareOption{Magister}{
-  \Itogtrue
-  \Magistertrue
+	\Itogtrue
+	\Magistertrue
+	\Courseworkfalse
+	\Practikafalse
 }
 \DeclareOption{Otchet}{
-\Practikatrue
+	\Practikatrue
+	\Courseworkfalse
+	\Magisterfalse
+	\Itogfalse
 }
 \DeclareOption{Report}{
-\Practikatrue
+	\Practikatrue
+	\Courseworkfalse
+	\Magisterfalse
+	\Itogfalse
 }
+
+\DeclareOption{Project}{
+  \Projectrue
+}
+
+
 \ProcessOptions
 \relax
 
@@ -133,14 +160,12 @@
 \newcommand{\theauthor}{}
 \newcommand{\theAuthor}{}
 \newcommand{\theauthorIO}{}
-
-%\newcommand{\author}[2]{\def\aut@r{#1}{#2}\author@io}
-%\newcommand{\autor@io}[1][]{\aut@r; optional: #1}
-
 \renewcommand{\author}[3][]%
-  {\renewcommand{\theauthorIO}{#1}
-	\renewcommand{\theAuthor}{#2}
-	\renewcommand{\theauthor}{#3}} 
+{%
+	\renewcommand{\theauthorIO}{#1}%
+	\renewcommand{\theAuthor}{#2}%
+	\renewcommand{\theauthor}{#3}%
+} 
 
 % Руководитель
 
@@ -148,9 +173,24 @@
 \newcommand{\theadvisorIO}{}
 \newcommand{\theAdvisor}{}
 \newcommand{\advisor}[3][]%
-  {\renewcommand{\theadvisorIO}{#1}
-   \renewcommand{\theAdvisor}{#2}
-   \renewcommand{\theadvisor}{#3}}
+{%
+	\renewcommand{\theadvisorIO}{#1}%
+	\renewcommand{\theAdvisor}{#2}%
+	\renewcommand{\theadvisor}{#3}%
+}
+
+
+% КонсультантРуководитель
+\newcommand{\theconsult}{}
+\newcommand{\theConsult}{}
+\newcommand{\theconsultIO}{}
+\newcommand{\consult}[3][]%
+{%
+	\Consulttrue
+	\renewcommand{\theconsultIO}{#1}%
+	\renewcommand{\theConsult}{#2}%
+	\renewcommand{\theconsult}{#3}%
+}
 
 \newcommand{\therecenzent}{}
 \newcommand{\theRecenzent}{}
@@ -186,35 +226,40 @@
 \renewcommand{\date}[1]%
   {\renewcommand{\thedate}{#1}}
 
+
+
   
 \ifItog %Дипломная
-  \renewcommand{\theTheme}{}
-  \ifMagister
-    \work{Магистерская диссертация}
-  \else 
-    \work{Выпускная квалификационная работа}
-  \fi
-\else
-  \renewcommand{\theTheme}{}
-  \renewcommand{\thebeforeTitle}{}
-  \renewcommand{\theafterTitle}{}
-  \ifPractika
-    \work{Отчёт}
-	\renewcommand{\show@title}{\thework{} \theReportType}    
-  \else 
-    \work{}
-%    \work{Курсовая работа}
-  \fi
+	\renewcommand{\theTheme}{}
+	\ifMagister
+		\work{Магистерская диссертация}
+	\else 
+		\work{Выпускная квалификационная работа}
+	\fi
 \fi
+\ifCoursework 
+	\ifProject
+		\work{Курсовой проект}
+	\else
+		\work{Курсовая работа}
+	\fi
+\fi
+\ifPractika
+	\renewcommand{\theTheme}{}
+	\renewcommand{\thebeforeTitle}{}
+	\renewcommand{\theafterTitle}{}
+	
+	\work{Отчёт}
+	\renewcommand{\show@title}{\thework{} \theReportType}    
+\fi
+
 
 \newcommand{\EmptyField}[2]{$\underset{\text{(\textit{#1})}}{\underline{\hspace{#2}}}$}
   
-\renewcommand{\maketitle}{
-\begin{titlepage}
-\linespread{1}\normalfont
-\centering 
-{
-	\small
+  
+\def\theTitleHead{
+	{
+	\centering\small
 	Министерство образования и науки Российской Федерации\par
 	\smallskip
 	ФГБОУ ВО <<ВЯТСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ>>\par
@@ -226,88 +271,128 @@
 	\par
 	\smallskip
 	Кафедра \thekafedra\par
+	}\par
 }
 
-\vfill
-
-
- \ifItog %Дипломная
-	{\Large \thework
-	\par}
-	\smallskip
-	по направлению подготовки\\
-	\theNapravIndex\enspace{\theNaprav}\par 
-	\theProfile
-	\par
-	\vspace{1cm}
-	{\large на тему <<\show@title>> \par}
-  \else
-	\ifPractika 
-		{\Large \scshape \bfseries  \show@title\par} % Печатаем называние работы
-		\bigskip
-	\else 
+\def\theTitleFoot{
 	{
-		{\Large \scshape \bfseries \show@title} % Печатаем называние работы
-		\par
-		\bigskip
-		\textbf{\thework}
-		\par
-	}
-	\fi
-	\bigskip
-	Направление подготовки: \theNapravIndex\enspace{\theNaprav}\par
-	\theProfile \par
-  \fi
-
-\vfill
-\begin{flushright}
-\begin{minipage}{0.5\textwidth}
-	Выполнил: {\theAuthor}
-	\par \textit{\theauthor}\par
-	\ifItog\medskip\noindent\EmptyField{подпись}{6cm}\par\fi
-\end{minipage}
-\par
-\vspace{\baselineskip}
-\begin{minipage}{0.5\textwidth}
-	\ifPractika 
-		Руководитель практики:
-	\else 
-		Научный руководитель:
-	\fi\par
-	\theAdvisor\par
-	 \textit{\theadvisor}\par
-	\ifItog\medskip\noindent\EmptyField{подпись}{6cm}\par\fi	 
- \end{minipage}
- \end{flushright}
- 
-\vfill
-
-
-\ifItog %Дипломная
-{\raggedright \small
-  Допущено к защите в ГЭК:
-  <<\underline{\hspace{2em}}>>\underline{\hspace{35mm}}20\underline{\hspace{2em}}\,г.\par
-  \medskip
-  Заведующий кафедрой \thekafedra \par
-  \rule{0pt}{2em}\EmptyField{подпись}{6cm}\hfill \thezavkaf\par
-  \bigskip
-
-  \ifMagister 
-     Руководитель магистерской программы \theMa \par
-	  \rule{0pt}{2em}\EmptyField{подпись}{6cm}\hfill \themagistradvisor\par
-     \bigskip
-  \fi
-
-  Декан факультета \thedepartment\par
-  \rule{0pt}{2em}\EmptyField{подпись}{6cm}\hfill \thedekan\par  
-  \par
+	\centering
+	Киров\\
+	\thedate\par
+	}\par
 }
-\fi\par
-\vfill
-Киров\\
-\thedate\par
-\end{titlepage}
-\setcounter{page}{2}
+
+\def\theTitleVisa{
+	{\raggedright
+		\ifItog
+			{
+			\small
+			 Допущено к защите в ГЭК:
+			 <<\underline{\hspace{2em}}>>\underline{\hspace{35mm}}20\underline{\hspace{2em}}\,г.\par
+			 \smallskip
+			 Заведующий кафедрой \thekafedra \par
+			  \rule{0pt}{2em}\EmptyField{подпись}{6cm}\hfill \thezavkaf\par
+			 \smallskip
+			\ifMagister 
+			     Руководитель магистерской программы \theMa \par
+				 \rule{0pt}{2em}\EmptyField{подпись}{6cm}\hfill \themagistradvisor\par
+				 \smallskip
+			\fi
+			 Декан факультета \thedepartment\par
+			 \rule{0pt}{2em}\EmptyField{подпись}{6cm}\hfill \thedekan\par  
+			 \par
+			 }
+		\fi
+		\ifCoursework
+			\vspace{1cm plus\fill minus 8mm\relax}
+			Работа защищена с оценкой \underline{\hspace{4cm}}\hfill <<\underline{\hspace{8mm}}>>\underline{\hspace{25mm}} 20\underline{\hspace{5mm}}~г.
+		\fi
+
+	}\par
+}
+
+\def\theTitleWorkName{
+	{\centering
+		\ifItog
+			{\Large \thework \par}
+			\medskip
+			по направлению подготовки\\
+			\theNapravIndex\enspace{\theNaprav}\par 
+			\theProfile
+			\par
+			\vspace{3mm plus 0mm minus 3mm\relax}
+			{\large на тему <<\show@title>> \par}
+		\fi
+		\ifCoursework
+			{\Large \thework \par}
+			\vspace{1cm}
+			{\Large\bfseries \show@title\par}
+			\par
+			\vspace{1cm}
+			Направление подготовки: \theNapravIndex\enspace{\theNaprav}\par 
+			\theProfile
+			\vspace{1cm}
+		\fi
+		\ifPractika
+			{\Large \scshape \bfseries \show@title\par} % Печатаем называние работы
+			\vspace{1cm}
+			Направление подготовки: \theNapravIndex\enspace{\theNaprav}\par 
+			\theProfile
+		\fi
+	}\par
+}
+
+\def\theTitleSignums{
+	\ifPractika 
+		\def\advisortype{Руководитель практики}
+	\else
+		\def\advisortype{Научный руководитель}
+	\fi
+	\begin{flushright}
+		\begin{minipage}{0.5\textwidth}
+			Выполнил: {\theAuthor}
+			\par \textit{\theauthor}\par
+			\medskip\noindent\EmptyField{подпись}{6cm}\par
+		\end{minipage}
+		\par
+		\vspace{\baselineskip}
+		\begin{minipage}{0.5\textwidth}
+			\advisortype:\par
+			\theAdvisor\par
+			\textit{\theadvisor}\par
+			\medskip\noindent\EmptyField{подпись}{6cm}\par
+		\end{minipage}
+		\par
+		\ifConsult
+			\vspace{\baselineskip}
+			\begin{minipage}{0.5\textwidth}
+				Консультант:\par
+				\theConsult\par
+				\textit{\theconsult}\par
+				\medskip\noindent\EmptyField{подпись}{6cm}\par
+			\end{minipage}
+		\fi
+	\end{flushright}
+}
+
+\renewcommand{\maketitle}{
+	\begin{titlepage}
+		\linespread{1}\normalfont
+		\centering 
+		\theTitleHead
+		\par
+		\par
+		\vspace{10mm plus \fill minus 3mm\relax}		
+		\theTitleWorkName
+		\par
+		\vspace{1cm plus \fill minus 3mm\relax}
+		\theTitleSignums
+		\vspace{1cm plus \fill minus 8mm\relax}
+		\theTitleVisa
+		\vfill
+		\theTitleFoot
+	\end{titlepage}
+	\setcounter{page}{2}
 }
 
 
@@ -466,11 +551,6 @@
 }
 
    
-% Настройка Оглавления    
-
-
-
-
 % теоремы
   \newtheorem{theorem}{\hspace{\parindent}Теорема}
   \newtheorem*{theorem*}{\hspace{\parindent}Теорема}
@@ -491,8 +571,6 @@
 \newcommand*{\hm}[1]{#1\nobreak\discretionary{}{\hbox{$\mathsurround=0pt #1$}}{}}  % Повторение знака в формулах
 \sloppy
 \linespread{1.3}
-
-
 
 
 
@@ -617,7 +695,7 @@
 
 \AtEndDocument{~\label{LastPage}}
 
-
+% добавление страницы реферат
 \newcommand{\makereferat}{
 	\newcounter{tmppage}
 	\setcounter{tmppage}{\value{page}}
