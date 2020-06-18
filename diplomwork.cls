@@ -15,6 +15,12 @@
 
 \newif\ifConsult	% флаг Есть консультант
 
+\newif\ifPlagiary  % флаг Проверка на плагиат
+
+\DeclareOption{PlagiaryCheck}{
+	\Plagiarytrue
+}
+
 \DeclareOption{Coursework}{
 	\Courseworktrue
 	\Magisterfalse  
@@ -539,15 +545,51 @@
  \endlist
 }
 \AtBeginDocument{
-\def\bibname{Библиографический список}
-\renewcommand{\appendixname}{ПРИЛОЖЕНИЕ}
-\renewcommand{\chaptername}{ГЛАВА}
-\renewcommand{\bibname}{Библиографический список} 
-\addtocontents{toc}{\protect\renewcommand{\protect\@chapapp}{\chaptername}}%
+	\renewcommand{\chaptername}{ГЛАВА}
+	\addtocontents{toc}{\protect\renewcommand{\protect\@chapapp}{\chaptername}}%
 
-\ifPractika 
-	\renewcommand{\contentsname}{Содержание}
-\fi
+	\ifPlagiary
+		\pagestyle{empty}
+		\nomath
+	
+		\def\maketitle{}
+		\def\ref#1{}
+%		\def\eqref##1{}
+		\def\makereferat{}
+		\def\tableofcontents{}
+		\def\APPENDIX{\end{document}}
+	%	\def\caption{}
+	
+	%	\KillEnv{figure}
+	%	\KillEnv{table}
+	%	\KillEnv{tabular}
+		\KillEnv{longtable}
+		\KillEnv{lstlisting}
+		\KillEnv{verbatim}
+%	    \KillEnv{thebibliography}%
+	    \KillEnv{figure}%
+	    \KillEnv{table}%
+	    \KillEnv{tabular}%
+	    \KillEnv{tikzpicture}%
+	    \KillEnv{align}%
+	    \KillEnv{align*}%
+	    \KillEnv{gather}%
+	    \KillEnv{gather*}%
+	    \KillEnv{multline}%
+	    \KillEnv{multline*}%
+	    \KillEnv{equation}%
+	    \KillEnv{equation*}%
+	    \KillEnv{displaymath}%
+	    \KillEnv{math}
+	\else
+		\def\bibname{Библиографический список}
+		\renewcommand{\appendixname}{ПРИЛОЖЕНИЕ}
+		\renewcommand{\bibname}{Библиографический список} 
+		\addtocontents{toc}{\protect\renewcommand{\protect\@chapapp}{\chaptername}}%
+		\ifPractika 
+			\renewcommand{\contentsname}{Содержание}
+		\fi
+	\fi
 }
 
    
@@ -697,7 +739,7 @@
 
 % добавление страницы реферат
 \newcommand{\makereferat}{
-	\newcounter{tmppage}
+	\newcounter{tmppage}	
 	\setcounter{tmppage}{\value{page}}
 	\newpage
 	\chapter*{Реферат}
@@ -742,4 +784,42 @@
 	{\box\@tempboxa\hfil}%
 	\endgraf}% 
 	\hss}}} 
+	
+	
+	
+	
+	
+% Антиплагиат
+
+
+\ifPlagiary
+
+	\def\nomath{%
+	\font\dummyft@=dummy \relax
+	   \count@\sixt@@n
+	   \loop
+	    \ifnum\count@ >\z@
+	     \advance\count@\m@ne
+	     \global\textfont\count@\dummyft@
+	     \global\scriptfont\count@\dummyft@
+	     \global\scriptscriptfont\count@\dummyft@
+	    \repeat
+	   \global\let\mathversion\@gobble
+	   \frozen@everymath={}
+	   \frozen@everydisplay={}
+	  \let\boldmath\relax
+	  \let\unboldmath\relax
+	  \let\mv@normal\@empty
+	  \let\mv@bold\@empty
+	  \let\NOD\@empty	  
+	  \def\text##1{}
+	}
+
+	\usepackage{environ}
+	\def\KillEnv#1{
+		\expandafter\let\csname #1\endcsname\relax
+		\expandafter\let\csname end#1\endcsname\relax
+		\NewEnviron{#1}{}
+	}
+\fi	
 \endinput
