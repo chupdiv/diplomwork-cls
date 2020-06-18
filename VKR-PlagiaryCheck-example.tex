@@ -1,0 +1,199 @@
+\documentclass[14pt,Diplom,PlagiaryCheck]{diplomwork}
+
+\usepackage{fancyvrb}
+\renewcommand{\theFancyVerbLine}{\footnotesize\arabic{FancyVerbLine}}
+
+\usepackage{tikz}
+
+\newcommand{\alert}[1]{{\color{red}#1}}
+
+\sloppy
+
+\date{2020}
+\author{студент МКб-4301-51-00}{Фамилых Имярек Батькович}
+\advisor{канд. физ.-матем. наук, доцент}{Иванов Петр Сидорович}
+%\consult{cт. науч. сотрудник\\ АО ВМП <<АВИТЕК>>}{Советова София Сергеевна} % Консультант от предприятия (такое тоже бывает)
+\title{Теория полуколец для младших школьников}
+
+
+\napravlenie{02.03.01}{Математика и компьютерные науки}
+\profile{Математические основы компьютерных наук}
+\kafedra{фундаментальной математики}{Е.\,М.~Вечтомов}
+\department{компьютерных и физико-математических наук}{Н.\,А.~Бушмелева}
+\institute{математики и информационных систем}
+
+
+
+\keywords{ключевые слова}
+
+\annotation{
+
+		Диссертация посвящена ...
+		
+		Цель работы: ...
+	
+		Центральным результатом работы является...
+		
+		
+}
+
+\begin{document}
+
+	
+\maketitle
+\makereferat		% печатаем реферат
+\newpage
+
+\tableofcontents
+
+
+\Chapter{Введение}
+Выпускная квалификационная работа посвящена ...
+
+
+\textbf{Актуальность} работы обусловлена...
+
+
+\textbf{Объектом исследования} являются
+
+\textbf{Предмет исследования}~--- 
+
+\textbf{Цель работы:} ...
+
+Для достижения поставленной цели сформулированы следующие \mbox{\textbf{задачи:}}
+
+\begin{enumerate}
+	\item ...
+	\item ...
+	\item ...
+\end{enumerate}
+
+\textbf{Гипотеза}, проверяемая в ходе исследования, состоит в следующем... (Гипотезу следует указывать, если ваше исследование предполагает проверку некоторой гипотезы,  сформулированной в начале Вашего исследования. Если же Вы занимаетесь разработкой программного продукта или свободным поиском свойств свойств некоторого математического объекта, то гипотеза не нужна)
+
+
+Для решения сформулированных задач  применяются следующие \textbf{методы}:...
+
+\textbf{Теоретическая значимость работы} состоит в следующем...
+
+\textbf{Практическая значимость работы} состоит в следующем...
+
+В целом работа носит \textbf{теоретический (или прикладной, или практический)} характер.
+
+
+
+\textbf{Структура работы.} Выпускная квалификационная работа, общим объемом \pageref{LastPage}~стр., состоит из введения, двух глав, заключения, библиографического списка.
+
+Первая глава посвящена ...
+
+Вторая глава посвящена  ...
+
+
+В заключении представлены основные результаты дипломной работы.
+
+В библиографический список включено (кол-во) источников.
+
+
+Результаты работы \textbf{апробированы} (в докладах..., статьях ..., внедрены...)
+
+
+\chapter{что-то}
+
+\section{sfsfsdfsfsdfsdfdsfsf}
+$ f(x) = \begin{cases}
+			1, &x \in I\\
+			-1, &x \notin I
+		 \end{cases}
+$
+
+$$
+ f(x) = \begin{cases}
+			1, &x \in I\\
+			-1, &x \notin I
+		\end{cases}
+$$
+\begin{equation}
+\label{eq:we}
+ f(x) = \begin{cases}
+			 1, &x \in I\\
+			 -1, &x \notin I
+ \end{cases}
+\end{equation}
+
+sdfsdfsdfsdfsdf~\ref{eq:we}
+sdfsdfsdf
+sdf
+sdfsdfsdf
+fsdfsdf
+
+\begin{theorem}[О всём сущем]
+текст
+\end{theorem}
+\begin{proof}
+текст
+\end{proof}
+\begin{prop}
+текст
+\end{prop}
+\begin{proof}[Пояснение]
+текст
+\end{proof}
+\begin{seq}
+текст
+\end{seq}
+\begin{lemma}
+текст
+\end{lemma}
+\begin{definition}
+текст
+\end{definition}
+\begin{example}
+текст
+\end{example}
+\chapter{Однако, глава}
+\section{и раз}
+\subsection{и два}
+\subsubsection{и три}
+\begin{figure}[H]
+	\caption{sdfgsdfgsf}
+	\label{fig:wqewe}
+\end{figure}
+
+\begin{table}[H]
+	\caption{sdfgsdfgsf}
+	\label{tbl:wqewe}
+	\begin{tabular}{|c|c|}
+		\hline
+		a & b \\
+		\hline
+		a & b \\
+		\hline
+		a & b \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+\Chapter{Заключение}
+
+
+
+\begin{thebibliography}{99}
+\bibitem{Book1} \alert{Библиография оформляется по ГОСТ 7.0.5-2008} 
+\end{thebibliography}
+
+\APPENDIX
+\chapter{Листинг программы}
+\linespread{1}
+
+%1.Функция,  котороя перемножает коэффициенты многочлена на матрицу:
+\begin{Verbatim}[numbers=left,firstnumber=last,fontsize=\small]
+f(x, F) := block([i, S], 
+    S: zeromatrix(dim, dim), 
+    for i: 1 thru length(F) do
+        S: S+mod(F[i]*(x^^(i-1)), P), 
+    return(mod(S, P))
+);
+\end{Verbatim}  
+
+
+\end{document}
