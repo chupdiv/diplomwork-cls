@@ -72,6 +72,7 @@
 \RequirePackage{amssymb, amsmath, amsthm}
 \RequirePackage{array}
 \RequirePackage{setspace} 
+\RequirePackage{soul}
 
 \usepackage[margin=20mm, left=30mm, right=10mm, 
             nohead,  % без верхнего колонтитула
@@ -147,7 +148,7 @@
 	\renewcommand{\theNaprav}{#2}}
 
 \newcommand{\profile}[1]{
-	\renewcommand{\theProfile}{Профиль: <<#1>>}
+	\renewcommand{\theProfile}{#1}
 	}
 
 
@@ -216,6 +217,11 @@
 \newcommand{\theReportType}{}
 \newcommand{\reporttype}[1]{\renewcommand{\theReportType}{#1}}
 
+
+% Тип отчета
+\newcommand{\thePracticsBase}{}
+\newcommand{\practicsbase}[1]{\renewcommand{\thePracticsBase}{#1}}
+
 %\newcommand{\theTheme}{на тему:~}
 %\newcommand{\thebeforeTitle}{<<}
 %\newcommand{\theafterTitle}{>>}
@@ -270,13 +276,17 @@
 	\smallskip
 	ФГБОУ ВО <<ВЯТСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ>>\par
 	\bigskip
-%	Институт \theinstitute
-%	\par
-%	\smallskip
-	Факультет \thedepartment
-	\par
-	\smallskip
-	Кафедра \thekafedra\par
+	\ifPractika
+		\vspace{15mm}
+	\else
+	%	Институт \theinstitute
+	%	\par
+	%	\smallskip
+		Факультет \thedepartment
+		\par
+		\smallskip
+		Кафедра \thekafedra\par
+	\fi
 	}\par
 }
 
@@ -313,7 +323,16 @@
 			\vspace{1cm plus\fill minus 8mm\relax}
 			Работа защищена с оценкой \underline{\hspace{4cm}}\hfill <<\underline{\hspace{8mm}}>>\underline{\hspace{25mm}} 20\underline{\hspace{5mm}}~г.
 		\fi
-
+		\ifPractika
+			{\raggedright
+			Итоговая оценка: \underline{\hspace{85mm}}\par
+			\bigskip
+			Руководитель практики\par от университета:\hfill
+			\EmptyField{дата}{3cm}\hfill 
+			\EmptyField{подпись}{3cm}\hfill
+			\mbox{\theadvisor}
+			}
+		\fi
 	}\par
 }
 
@@ -324,7 +343,7 @@
 			\medskip
 			по направлению подготовки\\
 			\theNapravIndex\enspace{\theNaprav}\par 
-			\theProfile
+			Профиль: <<\theProfile>>
 			\par
 			\vspace{3mm plus 0mm minus 3mm\relax}
 			{\large на тему <<\show@title>> \par}
@@ -339,66 +358,105 @@
 			\theProfile
 			\vspace{1cm}
 		\fi
-		\ifPractika
-			{\Large \scshape \bfseries \show@title\par} % Печатаем называние работы
-			\vspace{1cm}
-			Направление подготовки: \theNapravIndex\enspace{\theNaprav}\par 
-			\theProfile
-		\fi
 	}\par
 }
 
-\def\theTitleSignums{
-	\ifPractika 
-		\def\advisortype{Руководитель практики}
-	\else
-		\def\advisortype{Научный руководитель}
-	\fi
-	\begin{flushright}
-		\begin{minipage}{0.5\textwidth}
-			Выполнил: {\theAuthor}
-			\par \textit{\theauthor}\par
-			\medskip\noindent\EmptyField{подпись}{6cm}\par
-		\end{minipage}
-		\par
-		\vspace{\baselineskip}
-		\begin{minipage}{0.5\textwidth}
-			\advisortype:\par
-			\theAdvisor\par
-			\textit{\theadvisor}\par
-			\medskip\noindent\EmptyField{подпись}{6cm}\par
-		\end{minipage}
-		\par
-		\ifConsult
-			\vspace{\baselineskip}
-			\begin{minipage}{0.5\textwidth}
-				Консультант:\par
-				\theConsult\par
-				\textit{\theconsult}\par
-				\medskip\noindent\EmptyField{подпись}{6cm}\par
-			\end{minipage}
-		\fi
-	\end{flushright}
-}
 
 \renewcommand{\maketitle}{
-	\begin{titlepage}
-		\linespread{1}\normalfont
-		\centering 
-		\theTitleHead
-		\par
-		\par
-		\vspace{10mm plus \fill minus 3mm\relax}		
-		\theTitleWorkName
-		\par
-		\vspace{1cm plus \fill minus 3mm\relax}
-		\theTitleSignums
-		\vspace{1cm plus \fill minus 8mm\relax}
-		\theTitleVisa
-		\vfill
-		\theTitleFoot
-	\end{titlepage}
-	\setcounter{page}{2}
+	\ifPractika 
+		\begin{titlepage}
+			\linespread{1}\normalfont
+			\centering 
+			\theTitleHead
+			\par
+			\par
+			\vspace{10mm plus \fill minus 3mm\relax}	
+			{\Large \scshape \bfseries \show@title\par} % Печатаем называние работы
+			\vspace{1cm}
+			\vfill
+
+			\noindent\begin{tabular}{>{\centering}p{0.95\textwidth}}
+				{\theauthor}\tabularnewline
+				\hline
+				{\scriptsize (Ф.И.О. обучающегося)} \tabularnewline[2mm]				
+				{\theAuthor}\tabularnewline
+				\hline
+				{\scriptsize (учебная группа)} \tabularnewline[2mm]				
+				 \theNapravIndex\enspace{\theNaprav},
+				\theProfile\tabularnewline
+				\hline
+				{\scriptsize (направление подготовки (специальность), направленность (профиль))} \tabularnewline[2mm]
+				
+			\end{tabular}
+			
+			\par
+			\vspace{10mm plus \fill minus 3mm\relax}	
+
+			{
+			\raggedright
+			\textbf{Место прохождения практики:}\par
+			
+			\medskip
+			\begin{tabular}{>{\centering}p{0.95\textwidth}}
+				{ \thePracticsBase}\tabularnewline
+			 	\hline
+			 	{\scriptsize (наименование организации, структурного подразделения организации) } \tabularnewline[2mm]				
+			\end{tabular}\par
+			\vspace{1cm plus \fill minus 3mm\relax}
+			\par
+			}
+			\vfill
+			\theTitleVisa
+			 \vfill
+			 \theTitleFoot
+		\end{titlepage}
+		\setcounter{page}{2}
+	\else
+		\def\advisortype{Научный руководитель}
+		\begin{titlepage}
+			\linespread{1}\normalfont
+			\centering 
+			\theTitleHead
+			\par
+			\par
+			\vspace{10mm plus \fill minus 3mm\relax}		
+			\theTitleWorkName
+			\par
+			\vspace{1cm plus \fill minus 3mm\relax}
+			% Данные о выполнившем работу
+			\begin{flushright}
+				\begin{minipage}{0.5\textwidth}
+					Выполнил: {\theAuthor}
+					\par \textit{\theauthor}\par
+					\medskip\noindent\EmptyField{подпись}{6cm}\par
+				\end{minipage}
+				\par
+				\vspace{\baselineskip}
+				\begin{minipage}{0.5\textwidth}
+					\advisortype:\par
+					\theAdvisor\par
+					\textit{\theadvisor}\par
+					\medskip\noindent\EmptyField{подпись}{6cm}\par
+				\end{minipage}
+				\par
+				\ifConsult
+					\vspace{\baselineskip}
+					\begin{minipage}{0.5\textwidth}
+						Консультант:\par
+						\theConsult\par
+						\textit{\theconsult}\par
+						\medskip\noindent\EmptyField{подпись}{6cm}\par
+					\end{minipage}
+				\fi
+			\end{flushright}
+			% Конец данных о выполнившем.
+			\vspace{1cm plus \fill minus 8mm\relax}
+			\theTitleVisa
+			\vfill
+			\theTitleFoot
+		\end{titlepage}
+		\setcounter{page}{2}
+	\fi	
 }
 
 
