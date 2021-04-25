@@ -271,14 +271,18 @@
   
 \def\theTitleHead{
 	{
-	\centering\small
-	Министерство науки и высшего образования Российской Федерации\par
-	\smallskip
-	ФГБОУ ВО <<ВЯТСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ>>\par
+	\centering
+	{\footnotesize
+	МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ\par
+	\medskip
+	Федеральное государственное бюджетное образовательное учреждение 
+	высшего образования\par
+	<<ВЯТСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ>>\\ (ВятГУ)\par}
 	\bigskip
 	\ifPractika
 		\vspace{15mm}
 	\else
+		{\footnotesize
 	%	Институт \theinstitute
 	%	\par
 	%	\smallskip
@@ -286,6 +290,7 @@
 		\par
 		\smallskip
 		Кафедра \thekafedra\par
+		}
 	\fi
 	}\par
 }
