@@ -124,6 +124,32 @@
 	position=below,
 	name=Рисунок}
 
+\newcounter{allfigures}
+\newcounter{alltables}
+\setcounter{allfigures}{0}
+\setcounter{alltables}{0}
+
+\RequirePackage{totcount}
+\newtotcounter{figurenum}
+\def\oldfigure{} \let\oldfigure=\figure
+\def\figure{\stepcounter{figurenum}\oldfigure}
+
+\newtotcounter{tablenum}
+\def\oldtable{} \let\oldtable=\table
+\def\table{\stepcounter{tablenum}\oldtable}
+
+\newtotcounter{bibnum}
+\def\oldbibitem{} \let\oldbibitem=\bibitem
+\def\bibitem{\stepcounter{bibnum}\oldbibitem}
+\newtotcounter{appnum}
+
+%%% регистрируем счётчики в системе totcounter
+%    \regtotcounter{figure}
+%    \regtotcounter{table}       % Если иным способом поставить в преамбуле то ошибка в числе таблиц
+%%    \regtotcounter{TotPages}               % Если иным способом поставить в преамбуле то ошибка в числе страниц
+%    \newtotcounter{totalappendix}
+%%    \newtotcounter{totalchapter}
+
 % Название кафедры и зав каф
 \newcommand{\thekafedra}{}
 \newcommand{\theshortkafedra}{}
@@ -689,6 +715,10 @@
 	\addtocontents{toc}{\protect\renewcommand{\protect\@chapapp}{\appendixname}}%
 	\addtocontents{toc}{\protect\setcounter{tocdepth}{0}}%
 	\gdef\thechapter{\Asbuk{chapter}}  
+
+	\def\oldchapter{} \let\oldchapter=\chapter
+	\def\chapter{\stepcounter{appnum}\oldchapter}
+	
 %	\setcounter{page}{1} % нумерацию страниц начинаем с 2
 %	\renewcommand{\thepage}{\roman{page}} % страницы нумеруем римскими числами, так как приложения не являются частью работы
 }
@@ -834,6 +864,57 @@
 	\newpage
 	\setcounter{page}{\value{tmppage}}
 	}
+
+\renewcommand{\makereferat}{
+	\newcounter{tmppage}	
+	\setcounter{tmppage}{\value{page}}
+	\newpage
+	\chapter*{Реферат}
+	\thispagestyle{empty}
+	\begin{minipage}{0.3\textwidth}
+		\ifx \theauthorIO \NIL
+			\theauthor
+		\else
+			\theauthorIO
+		\fi
+	\end{minipage}
+	\hfill
+	\begin{minipage}{0.5\textwidth}
+		{\show@title}
+	\end{minipage}
+	\par
+	\vspace{10mm}\par
+	
+	ПЗ\;:\;\thework,
+	каф. 
+	\ifx \theshortkafedra \NIL
+		\thekafedra
+	\else
+		\theshortkafedra
+	\fi;
+	рук. 
+	\ifx  \theadvisorIO \NIL
+			 \theadvisor
+		\else
+			\theadvisorIO
+		\fi.
+	Киров, \thedate.
+	\par\bigskip
+%	 Гр.ч.     л.ф.А.    ; 
+	 ПЗ \pageref{LastPage}~c.,
+	 \total{figurenum}~рис., 
+	 \total{tablenum}~табл.,
+	 \total{bibnum} источников, 
+	 \total{appnum}~прил.
+	\par\medskip
+		
+	{\scshape \thekeywords}\par
+	\bigskip
+	\theannotation
+	\newpage
+	\setcounter{page}{\value{tmppage}}
+	}
+
 	\newcommand{\theannotation}{}
 	\newcommand{\annotation}[1]{\renewcommand{\theannotation}{#1}}
 	
